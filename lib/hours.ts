@@ -9,6 +9,11 @@ export interface OpeningHours {
   /** Exclusive local HH:MM; overnight intervals are deliberately unsupported. */
   closes?: string;
 }
+export interface OpeningLabelOptions {
+  openPrefix?: string;
+  closedPrefix?: string;
+  fallback?: string;
+}
 const clock = /^([01]\d|2[0-3]):[0-5]\d$/;
 const minutes = (value: string) => Number(value.slice(0, 2)) * 60 + Number(value.slice(3));
 export function validateHours(hours: readonly OpeningHours[]): void {
@@ -24,8 +29,15 @@ export function validateHours(hours: readonly OpeningHours[]): void {
   if (hours.length !== 7) throw new Error('hours: expected seven weekdays');
 }
 /** Browser callers supply the clock; build/static views never compute current availability. */
-export function openingLabel(hours: readonly OpeningHours[], timeZone: string, now = new Date()): string {
-  const fallback = 'See opening hours';
+export function openingLabel(
+  hours: readonly OpeningHours[],
+  timeZone: string,
+  now = new Date(),
+  options: OpeningLabelOptions = {},
+): string {
+  const openPrefix = options.openPrefix ?? 'Open now';
+  const closedPrefix = options.closedPrefix ?? 'Closed';
+  const fallback = options.fallback ?? 'See opening hours';
   if (!timeZone) return fallback;
   validateHours(hours);
   let parts: Intl.DateTimeFormatPart[];
@@ -37,11 +49,21 @@ export function openingLabel(hours: readonly OpeningHours[], timeZone: string, n
   if (index < 0) return fallback;
   const current = Number(part('hour')) * 60 + Number(part('minute'));
   const today = hours.find(entry => entry.day === DAYS[index])!;
-  if (today.opens && today.closes && current >= minutes(today.opens) && current < minutes(today.closes)) return `Open now · until ${today.closes}`;
+  if (today.opens && today.closes && current >= minutes(today.opens) && current < minutes(today.closes)) {
+    return `${openPrefix} · until ${today.closes}`;
+  }
   for (let offset = 0; offset <= 7; offset++) {
     const day = DAYS[(index + offset) % 7];
     const entry = hours.find(value => value.day === day)!;
-    if (entry.opens && (offset > 0 || current < minutes(entry.opens))) return `Closed · opens ${offset === 0 ? 'today' : day} at ${entry.opens}`;
+    if (entry.opens && (offset > 0 || current < minutes(entry.opens))) {
+      return `${closedPrefix} · opens ${offset === 0 ? 'today' : day} at ${entry.opens}`;
+    }
   }
-  return 'Closed · see opening hours';
+  return `${closedPrefix} · see opening hours`;
 }
+
+export const PHONE_HOURS_OPTIONS: OpeningLabelOptions = {
+  openPrefix: 'Phones open',
+  closedPrefix: 'Phones closed',
+  fallback: 'Phone hours: Mon–Fri 8:00–17:30, Sat 9:00–12:00',
+};

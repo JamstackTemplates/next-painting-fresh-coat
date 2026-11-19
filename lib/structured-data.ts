@@ -1,13 +1,30 @@
 import { business } from '../content/business.ts';
 import { absoluteUrl } from './paths.ts';
+import { site } from './site.ts';
 
-/** Replace Organization with the appropriate business schema when designing a template. */
+/** HousePainter schema.org structured data derived from typed business content. */
 export function businessStructuredData() {
   const url = absoluteUrl('/');
+  const openingHoursSpecification = business.phoneHours
+    .filter(entry => entry.opens && entry.closes)
+    .map(entry => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: entry.day,
+      opens: entry.opens,
+      closes: entry.closes,
+    }));
+
   return {
-    '@context': 'https://schema.org', '@type': 'Organization',
-    name: business.name, description: business.introduction, email: business.email,
-    ...(business.phone ? { telephone: business.phone } : {}), ...(url ? { url } : {}),
+    '@context': 'https://schema.org',
+    '@type': 'HousePainter',
+    name: business.name,
+    description: site.description || business.introduction,
+    email: business.email,
+    ...(business.phone ? { telephone: business.phone } : {}),
+    priceRange: business.priceRange,
+    areaServed: [...business.serviceArea],
+    openingHoursSpecification,
+    ...(url ? { url } : {}),
   };
 }
 

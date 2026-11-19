@@ -72,3 +72,25 @@ and Pages never import/read it. Keep site.config.json, the form and workflow out
 light/dark captures after a fresh normal build and run node --test jamstacks/config.test.mjs separately.
 Each new template needs its own business-led layout/fonts/art and OG image; do not ship the neutral
 starter as a final design. Remove `plan/` and `.claude/skills/` before publishing a gallery template once reviewed.
+
+## File ownership
+
+- `content/business.ts`: business identity, email, phone, `Europe/London` timeZone, `phoneHours`, `serviceArea`, `leadTime` and Contact enquiry copy.
+- `content/colours.ts`: house swatch library (`BC-###`), validation and 6 seasonal flags.
+- `content/services.ts`: interior/exterior/commercial services, `fromPrice` guide prices, `typicalDays`, `includes` and swatch IDs.
+- `content/projects.ts`: completed projects, scene types, colour IDs, areas, summaries and 3 featured flags.
+- `content/process.ts`: four ordered steps for "How a job runs".
+- `app/**/page.tsx` and `app/not-found.tsx`: route-level composition and owner-editable headings/copy.
+- `components/art/`: bespoke inline SVG artwork (`HeroRoom`, `SceneVignette`, `ProcessArt`, `NotFoundArt`, `SwatchChip`, `MiniSwatchFan`, rules and decorator icons).
+- `app/tailwind.input.css`: light/dark tokens, font theme mappings, dust-sheet & masking-tape styles and print rules.
+- `lib/structured-data.ts`: `HousePainter` JSON-LD derived from `content/business.ts`.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

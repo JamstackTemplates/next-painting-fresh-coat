@@ -1,7 +1,8 @@
 {
-  "name": "Jamstacks starter",
-  "description": "A neutral Next.js foundation for Jamstacks websites.",
-  "domain": "",
+  "name": "Brushstroke & Co. Painters",
+  "description": "Brushstroke & Co. Painters: interior, exterior and commercial painting across Edinburgh and the Lothians. Careful prep, clean lines, tidy sites. Ask for a quote visit.",
+  "domain": "next-painting-fresh-coat.jamstacks.net",
+  "timeZone": "Europe/London",
   "jamstacks": {
     "siteId": "",
     "cdnUrl": "https://cdn.jamstacks.net"
